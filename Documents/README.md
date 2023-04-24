@@ -7,6 +7,6 @@ The objective from the point of view of the pet owner are the possibility of bei
 
 Members of the project:
 
-    Irene Porta Bravo (irene.porta1423@alum.esci.upf.edu)
-    Paula Vela Moreno (paula.vela@alum.esci.upf.edu)
-    Alba Mas i Puig (alba.mas@alum.esci.upf.edu)
+- Irene Porta Bravo (irene.porta1423@alum.esci.upf.edu)
+- Paula Vela Moreno (paula.vela@alum.esci.upf.edu)
+- Alba Mas i Puig (alba.mas@alum.esci.upf.edu)
