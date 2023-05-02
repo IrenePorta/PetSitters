@@ -1,0 +1,25 @@
+#UML CODE:
+
+@startuml
+left to right direction
+actor "Pet sitter" as ps
+actor "Pet owner" as po
+actor "user" as u
+actor "payment system" as payment
+actor "administrator" as admin
+rectangle system {
+  usecase "Log in first time" as UC1
+  usecase "select days calendar" as UC2
+  usecase "payment" as UC3
+  usecase "ban users" as UC4
+
+}
+u <-- ps
+u  <-- po
+u -- UC1
+po -- UC2
+UC3 -- payment
+ps -- UC2
+
+UC4 --admin
+@enduml
