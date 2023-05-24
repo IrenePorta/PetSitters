@@ -1,5 +1,5 @@
 @startuml
-title UC-01 - User Registration - Sequence Diagram
+title UC-01: User Registration - Sequence Diagram
 
 actor User
 participant UI
