@@ -1,0 +1,22 @@
+@startuml
+title UC-08: Make Payment - Sequence Diagram
+
+actor "Pet Owner" as owner
+participant "UI" as ui
+participant "Payment System" as paymentSystem
+
+owner -> ui: Selects service and views payment details
+ui -> owner: Displays service cost and details
+
+owner -> ui: Confirms payment details
+
+alt Payment method is valid
+    owner -> ui: Selects payment method
+    ui -> paymentSystem: Sends payment request
+    paymentSystem -> ui: Processes payment
+    ui -> owner: Sends payment confirmation
+else Payment method is invalid
+    ui -> owner: Requests valid payment method
+end
+
+@enduml
