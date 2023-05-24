@@ -1,0 +1,33 @@
+@startuml
+title UC-08: Make Payment - Activity Diagram
+
+start
+:User accesses payment page;
+note right: The user navigates to the payment page on the app.
+
+:User views service cost and details;
+
+if (User confirms payment details) then (yes)
+  :User selects payment method;
+   note right: e.g., credit card, debit card, PayPal, etc.
+  if (Payment method valid?) then (yes)
+    :User initiates payment transaction;
+    :System processes payment;
+    note right: The payment system securely processes the transaction.
+    if (Payment successful?) then (yes)
+      :System generates payment receipt;
+      :User receives payment confirmation;
+      stop
+    else (no)
+      :System displays payment error;
+      stop
+    endif
+  else (no)
+    :User is prompted to select valid payment method;
+    stop
+  endif
+else (no)
+  :User revises service details or cancels;
+  stop
+endif
+@enduml
