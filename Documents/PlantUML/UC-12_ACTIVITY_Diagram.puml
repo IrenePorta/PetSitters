@@ -1,0 +1,19 @@
+@startuml
+title UC-12: Confirm Appointment - Activity Diagram
+
+start
+:User reviews selected appointment dates;
+
+:User verifies appointment details;
+note right: Such as timing and pet sitter.
+
+:User confirms appointment;
+
+:System records confirmation;
+note right: Records the user's confirmation and updates the appointment status.
+
+:User receives confirmation message;
+
+stop
+
+@enduml
