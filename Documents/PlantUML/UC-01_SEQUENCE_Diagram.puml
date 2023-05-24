@@ -1,0 +1,33 @@
+@startuml
+title UC-01 - User Registration - Sequence Diagram
+
+actor User
+participant UI
+participant Database
+
+User -> UI : Access Registration Page
+UI -> User : Display Registration Form
+
+alt Register as Pet Owner
+    User -> UI : Enter Personal and Pet Information
+    UI -> Database : Save User and Pet Information
+    Database --> UI : Confirmation
+    UI --> User : Display Success Message
+else Register as Pet Sitter
+    User -> UI : Enter Personal and Sitter Information
+    UI -> Database : Save User and Sitter Information
+    Database --> UI : Confirmation
+    UI --> User : Display Success Message
+end
+
+User -> UI : Set and Confirm Password
+UI -> Database : Save Password
+Database --> UI : Confirmation
+UI --> User : Display Success Message
+
+User -> UI : Complete Registration
+UI -> Database : Verify Information and Create Account
+Database --> UI : Confirmation
+UI --> User : Display Confirmation Message
+
+@enduml
