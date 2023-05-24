@@ -1,0 +1,17 @@
+@startuml
+title UC-12: Confirm Appointment - Sequence Diagram
+
+actor "Pet Owner" as owner
+participant "UI" as ui
+participant "Database" as db
+
+owner -> ui: Reviews selected appointment dates
+owner -> ui: Verifies appointment details
+owner -> ui: Confirms appointment
+
+ui -> db: Records appointment confirmation
+db -> ui: Returns confirmation status
+
+ui -> owner: Displays confirmation message
+
+@enduml
