@@ -1,5 +1,5 @@
 @startuml
-title UC-01 - User Registration - Activity Diagram
+title UC-01: User Registration - Activity Diagram
 
 (*) --> "Access Registration Page"
 
