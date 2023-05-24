@@ -1,0 +1,17 @@
+@startuml
+title UC-11: Select Appointment Days - Sequence Diagram
+
+actor "Pet Owner" as owner
+participant "UI" as ui
+participant "Database" as db
+
+owner -> ui: Accesses appointment calendar
+ui -> owner: Displays calendar
+
+owner -> ui: Selects desired date or date range
+ui -> db: Records selected dates
+
+db -> ui: Confirms dates recorded
+ui -> owner: Displays confirmation of selected dates
+
+@enduml
