@@ -1,0 +1,94 @@
+@startuml
+
+title Pet Sitting App Class Diagram v2
+
+class User {
+  -UserType type
+  -String name
+  -String contact
+  -Appointment[] appointments
+  -Message[] messages
+  -Profile profile
+  +register()
+  +manageProfile()
+}
+
+class PetOwner {
+  -Pet[] pets
+  -Appointment[] requestedAppointments
+  +searchPetSitter()
+  +viewPetSitterProfile()
+  +requestAppointment()
+  +manageAppointments()
+  +makePayment()
+  +rateAndReview()
+  +selectAppointmentDays()
+  +confirmAppointment()
+  +updateAppointment()
+  +cancelAppointment()
+}
+
+class PetSitter {
+  -int yearsExperience
+  -Appointment[] receivedAppointments
+  +acceptRejectRequest()
+}
+
+class Pet {
+  -String name
+  -String breed
+  -Date birthdate
+  -String specialNeeds
+  +setPetDetails()
+}
+
+class Appointment {
+  -Date date
+  -Time startTime
+  -Time endTime
+  -PetSitter sitter
+  -PetOwner owner
+  -boolean confirmed
+  -Payment payment
+  +modifyDetails()
+  +reschedule()
+  +cancel()
+}
+
+class Payment {
+  -float amount
+  -PaymentMethod method
+  +makePayment()
+}
+
+class Review {
+  -float rating
+  -String comment
+  +writeReview()
+}
+
+class Message {
+  -User sender
+  -User receiver
+  -String text
+  +sendMessage()
+}
+
+class Profile {
+  -String personalInfo
+  -String serviceInfo
+  -Image profilePicture
+  +updateProfileInfo()
+}
+
+User <|-- PetOwner
+User <|-- PetSitter
+PetOwner "1" -- "*" Pet : owns
+PetOwner -- Appointment
+PetSitter -- Appointment
+User "1" -- "0..*" Message : exchanges
+User "1" -- "1" Profile : has
+Appointment -- Payment
+PetOwner -- Review
+
+@enduml
