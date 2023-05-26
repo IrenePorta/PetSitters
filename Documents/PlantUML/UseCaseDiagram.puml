@@ -1,0 +1,33 @@
+@startuml
+title Use Case Diagram 
+left to right direction
+
+actor "User" as User
+
+  User <|-- "PetOwner"
+  User <|-- "PetSitter"
+
+rectangle "System" {
+
+  PetOwner -- (User Registration)
+  PetOwner -- (Search for Pet Sitters)
+  PetOwner -- (View Pet Sitter Profile)
+  PetOwner -- (Request Appointment)
+  PetOwner -- (Manage Appointments)
+  PetOwner -- (In-App Messaging)
+  PetOwner -- (Make Payment)
+  PetOwner -- (Rate and Review)
+  PetOwner -- (User Profile Management)
+  PetOwner -- (Select Appointment Days)
+  PetOwner -- (Confirm Appointment)
+  PetOwner -- (Update Appointment)
+  PetOwner -- (Cancel Appointment)
+
+  PetSitter -- (User Registration)
+  PetSitter -- (Manage Appointments)
+  PetSitter -- (Accept/Reject Request)
+  PetSitter -- (In-App Messaging)
+  PetSitter -- (User Profile Management)
+}
+
+@enduml
