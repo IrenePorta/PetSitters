@@ -4,35 +4,28 @@ title UC-01: User Registration - Activity Diagram
 (*) --> "Access Registration Page"
 
 "Access Registration Page" --> "Enter Personal Information"
-note right: User provides personal details such as name, email, and phone number.
+note right: Such as: name, email, and phone number.
 
 "Enter Personal Information" --> "Select Role"
-note right: User chooses role - pet owner or pet sitter.
+note left: User chooses role: pet owner or pet sitter.
 
-"Select Role" --> if "Role: Pet Owner"
-if "Role: Pet Owner" --> "Enter Pet Information"
-note right: Pet owner provides details about their pets.
-"Enter Pet Information" --> "Set and Confirm Password"
+"Select Role" --> "Enter Role-Specific Information"
 
-"Select Role" --> if "Role: Pet Sitter"
-if "Role: Pet Sitter" --> "Enter Sitter Information"
-note right: Pet sitter provides details about their experience and services.
-"Enter Sitter Information" --> "Set and Confirm Password"
+"Enter Role-Specific Information" --> "Set and Confirm Password"
 
 "Set and Confirm Password" --> "Complete Registration"
-note right: User chooses a secure password.
+note left: User submits registration details.
 
 "Complete Registration" --> "Account Verification"
-note right: The system verifies the provided information.
 
-"Account Verification" --> if "Information Valid"
-if "Information Valid" --> "Account Created"
-note right: The system creates the user's account.
+"Account Verification" --> "Information Valid"
+
+"Information Valid" --> "Account Created"
+
 "Account Created" --> "Login"
-note right: The user can now log in to the system using their credentials.
 
-"Account Verification" --> if "Information Invalid"
-if "Information Invalid" --> "Return to Registration"
+"Account Verification" --> "Information Invalid"
+"Information Invalid" --> "Return to Registration"
 note right: The user is asked to correct any errors in their registration information.
 "Return to Registration" --> "Enter Personal Information"
 
