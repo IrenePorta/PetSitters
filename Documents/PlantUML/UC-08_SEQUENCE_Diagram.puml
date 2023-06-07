@@ -4,17 +4,29 @@ actor PetOwner
 entity "User Interface (UI)" as UI
 box "App core" #LightYellow
   entity "Payment Manager" as AppCore
+  entity "Security Manager" as Security
 end box
 entity "API Server" as API
 database "Database" as DB
 
-PetOwner -> UI : Initiates payment
+PetOwner -> UI : Selects "Make Payment" 
 activate UI
 
-UI -> AppCore : Sends payment details
+UI -> AppCore : Request to initiate payment process
 activate AppCore
 
-AppCore -> API : Sends payment details
+AppCore -> UI : Request for payment details
+UI -> PetOwner : Prompt for payment details
+PetOwner -> UI : Inputs payment details
+
+UI -> Security : Encrypts payment details
+activate Security
+Security --> UI : Returns encrypted details
+deactivate Security
+
+UI -> AppCore : Sends encrypted payment details
+
+AppCore -> API : Sends encrypted payment details
 activate API
 
 API -> DB : Stores payment details in database
