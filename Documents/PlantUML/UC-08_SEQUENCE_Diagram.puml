@@ -3,19 +3,28 @@ title: UC-08: Make Payment - Sequence Diagram
 actor PetOwner
 entity "User Interface (UI)" as UI
 box "App core" #LightYellow
-  entity "Payment Manager" as AppCore
+  entity "Payment Manager" as PaymentManager
+  entity "User Authentication" as UserAuth
   entity "Security Manager" as Security
 end box
-entity "API Server" as API
+box "API Server" #LightGreen
+  entity "Payment Processing API" as PaymentAPI
+  entity "User Verification API" as UserVerifyAPI
+end box
 database "Database" as DB
 
 PetOwner -> UI : Selects "Make Payment" 
 activate UI
 
-UI -> AppCore : Request to initiate payment process
-activate AppCore
+UI -> UserAuth : Verifies user authentication
+activate UserAuth
+UserAuth --> UI : Returns authentication status
+deactivate UserAuth
 
-AppCore -> UI : Request for payment details
+UI -> PaymentManager : Request to initiate payment process
+activate PaymentManager
+
+PaymentManager -> UI : Request for payment details
 UI -> PetOwner : Prompt for payment details
 PetOwner -> UI : Inputs payment details
 
@@ -24,22 +33,27 @@ activate Security
 Security --> UI : Returns encrypted details
 deactivate Security
 
-UI -> AppCore : Sends encrypted payment details
+UI -> PaymentManager : Sends encrypted payment details
+PaymentManager -> PaymentAPI : Sends encrypted payment details
+activate PaymentAPI
 
-AppCore -> API : Sends encrypted payment details
-activate API
-
-API -> DB : Stores payment details in database
+PaymentAPI -> UserVerifyAPI : Verifies user credentials
+activate UserVerifyAPI
+UserVerifyAPI -> DB : Check user credentials
 activate DB
+DB --> UserVerifyAPI : Returns user verification status
+deactivate DB
+UserVerifyAPI --> PaymentAPI : Returns user verification status
+deactivate UserVerifyAPI
 
-DB --> API : Returns payment confirmation
+PaymentAPI -> DB : Stores payment details in database
+DB --> PaymentAPI : Returns payment confirmation
 deactivate DB
 
-API --> AppCore : Returns payment confirmation
-deactivate API
-
-AppCore --> UI : Updates payment status
-deactivate AppCore
+PaymentAPI --> PaymentManager : Returns payment confirmation
+deactivate PaymentAPI
+PaymentManager --> UI : Updates payment status
+deactivate PaymentManager
 
 UI --> PetOwner : Displays payment confirmation
 deactivate UI
