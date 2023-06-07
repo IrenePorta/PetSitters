@@ -1,35 +1,63 @@
 @startuml
 title: UC-12: Confirm Appointment - Sequence Diagram
-actor PetOwner
-entity "User Interface (UI)" as UI
-box "App core" #LightYellow
-  entity "Appointment Manager" as AppCore
+actor "Pet Owner" as owner
+participant "User Interface (UI)" as ui
+box "App Core" #LightYellow
+  participant "Appointment Manager" as core
 end box
-entity "API Server" as API
-database "Database" as DB
+participant "API Server" as server
+database "Database" as db
 
-PetOwner -> UI : Selects appointment to confirm
-activate UI
+owner -> ui: Access appointment details
+activate ui
+ui -> core: Request appointment details
+activate core
+core -> server: API request for appointment details
+activate server
+server -> db: Retrieve appointment details
+activate db
+db --> server: Return appointment details
+deactivate db
+server --> core: Return appointment details
+deactivate server
+core --> ui: Display appointment details
+deactivate core
+owner -> ui: Review appointment details
+activate ui
 
-UI -> AppCore : Sends appointment confirmation request
-activate AppCore
+group Confirm Appointment
+    owner -> ui: Confirm appointment
+    activate ui
+    ui -> core: Confirm appointment request
+    activate core
+    core -> server: API request to confirm appointment
+    activate server
+    server -> db: Update appointment status to confirmed
+    activate db
+    db --> server: Appointment confirmation status
+    deactivate db
+    server --> core: Return appointment confirmation status
+    deactivate server
+    core --> ui: Display appointment confirmation
+    deactivate core
+end group
 
-AppCore -> API : Sends appointment confirmation request
-activate API
-
-API -> DB : Confirms appointment in database
-activate DB
-
-DB --> API : Returns appointment confirmation status
-deactivate DB
-
-API --> AppCore : Returns appointment confirmation status
-deactivate API
-
-AppCore --> UI : Updates appointment status
-deactivate AppCore
-
-UI --> PetOwner : Displays confirmation status
-deactivate UI
+group Handle Confirmation
+    owner -> ui: Verify confirmation
+    activate ui
+    ui -> core: Verify confirmation request
+    activate core
+    core -> server: API request for confirmation status
+    activate server
+    server -> db: Retrieve confirmation status
+    activate db
+    db --> server: Return confirmation status
+    deactivate db
+    server --> core: Return confirmation status
+    deactivate server
+    core --> ui: Display confirmation status
+    deactivate core
+    deactivate ui
+end group
 
 @enduml
