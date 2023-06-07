@@ -3,30 +3,14 @@ title: UC-08: Make Payment - Sequence Diagram
 actor PetOwner
 entity "User Interface (UI)" as UI
 box "App core" #LightYellow
-  entity "Payment Manager" as PaymentManager
-  entity "User Authentication" as UserAuth
+  entity "Payment Manager" as AppCore
   entity "Security Manager" as Security
-  entity "Error Handler" as ErrorHandler
 end box
-box "API Server" #LightGreen
-  entity "Payment Processing API" as PaymentAPI
-  entity "User Verification API" as UserVerifyAPI
-  entity "Error Logger API" as LoggerAPI
-end box
+entity "API Server" as API
 database "Database" as DB
-
 PetOwner -> UI : Selects "Make Payment" 
 activate UI
-
-UI -> UserAuth : Verifies user authentication
-activate UserAuth
-UserAuth --> UI : Returns authentication status
-deactivate UserAuth
-
-UI -> PaymentManager : Request to initiate payment process
-activate PaymentManager
-
-PaymentManager -> UI : Request for payment details
+AppCore -> UI : Request for payment details
 UI -> PetOwner : Prompt for payment details
 PetOwner -> UI : Inputs payment details
 
@@ -35,46 +19,20 @@ activate Security
 Security --> UI : Returns encrypted details
 deactivate Security
 
-UI -> PaymentManager : Sends encrypted payment details
-PaymentManager -> PaymentAPI : Sends encrypted payment details
-activate PaymentAPI
+UI -> AppCore : Sends encrypted payment details
 
-PaymentAPI -> UserVerifyAPI : Verifies user credentials
-activate UserVerifyAPI
-UserVerifyAPI -> DB : Check user credentials
+AppCore -> API : Sends encrypted payment details
+activate API
+
+API -> DB : Stores payment details in database
 activate DB
-DB --> UserVerifyAPI : Returns user verification status
+DB --> API : Returns payment confirmation
 deactivate DB
-UserVerifyAPI --> PaymentAPI : Returns user verification status
-deactivate UserVerifyAPI
-
-PaymentAPI -> DB : Stores payment details in database
-DB --> PaymentAPI : Returns payment confirmation
-deactivate DB
-
-alt Successful Payment
-    PaymentAPI --> PaymentManager : Returns payment confirmation
-    PaymentManager --> UI : Updates payment status
-    UI --> PetOwner : Displays payment confirmation
-else Payment Error
-    PaymentAPI -> LoggerAPI : Logs error details
-    activate LoggerAPI
-    LoggerAPI -> DB : Store error details
-    activate DB
-    DB --> LoggerAPI : Returns storage confirmation
-    deactivate DB
-    LoggerAPI --> PaymentAPI : Returns error log confirmation
-    deactivate LoggerAPI
-    PaymentAPI --> ErrorHandler : Sends error details
-    activate ErrorHandler
-    ErrorHandler --> UI : Updates error status
-    UI --> PetOwner : Displays error message
-end
-
-deactivate PaymentAPI
-deactivate ErrorHandler
-deactivate PaymentManager
+API --> AppCore : Returns payment confirmation
+deactivate API
+AppCore --> UI : Updates payment status
+deactivate AppCore
+UI --> PetOwner : Displays payment confirmation
 deactivate UI
 @enduml
-
 
