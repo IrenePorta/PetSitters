@@ -1,33 +1,72 @@
 @startuml
 title UC-01: User Registration - Activity Diagram
 
-(*) --> "Access Registration Page"
+start
 
-"Access Registration Page" --> "Enter Personal Information"
+:User accesses registration page;
+
+:User enters personal information;
 note right: Such as: name, email, and phone number.
 
-"Enter Personal Information" --> "Select Role"
+:User selects role;
 note left: User chooses role: pet owner or pet sitter.
 
-"Select Role" --> "Enter Role-Specific Information"
+:User enters role-specific information;
 
-"Enter Role-Specific Information" --> "Set and Confirm Password"
+:User sets and confirms password;
 
-"Set and Confirm Password" --> "Complete Registration"
-note left: User submits registration details.
+:User submits registration details;
+note left: Complete Registration.
 
-"Complete Registration" --> "Account Verification"
+if (Details valid?) then (yes)
+  
+  :Registration Controller receives registration details from UI;
 
-"Account Verification" --> "Information Valid"
+  :User Service checks for existing users in Database;
 
-"Information Valid" --> "Account Created"
+  if (User exists?) then (no)
+  
+    :User Service creates new user record in Database;
 
-"Account Created" --> "Login"
+    :Database returns success status to User Service;
 
-"Account Verification" --> "Information Invalid"
-"Information Invalid" --> "Return to Registration"
-note right: The user is asked to correct any errors in their registration information.
-"Return to Registration" --> "Enter Personal Information"
+    :User Service sends success status to Registration Controller;
 
-"Login" --> (*)
+    :Registration Controller updates UI;
+
+    :User receives account verification email;
+
+    :User clicks on verification link in email;
+
+    :Registration Controller verifies user;
+
+    :User Service verifies user account in Database;
+
+    :User Service sends verification success email via Email Service;
+
+    :Email Service confirms email sent to User Service;
+
+    :User Service sends success status to Registration Controller;
+
+    :Registration Controller updates UI;
+
+    :User sees successful verification message and logs in;
+
+  else (yes)
+
+    :System displays error message that user already exists;
+    :User is asked to correct any errors in their registration information;
+    :User re-enters personal information;
+
+  endif
+
+else (no)
+
+  :System prompts user to enter valid details;
+  :User re-enters personal information;
+
+endif
+
+stop
+
 @enduml
