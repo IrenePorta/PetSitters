@@ -1,36 +1,74 @@
 @startuml
-title: UC-11: Select Appointment Days - Sequence Diagram
+title: UC-11: Select Appointment Days - Sequence Diagram@startuml
 actor PetOwner
 entity "User Interface (UI)" as UI
 box "App core" #LightYellow
-  entity "Appointment Manager" as AppCore
+  entity "Appointment Manager" as AppointmentManager
+  entity "User Authentication" as UserAuth
+  entity "Error Handler" as ErrorHandler
 end box
-entity "API Server" as API
+box "API Server" #LightGreen
+  entity "Appointment API" as AppointmentAPI
+  entity "User Verification API" as UserVerifyAPI
+  entity "Error Logger API" as LoggerAPI
+end box
 database "Database" as DB
 
-PetOwner -> UI : Selects desired appointment days
+PetOwner -> UI : Selects "Choose Appointment Days" 
 activate UI
 
-UI -> AppCore : Sends selected appointment days
-activate AppCore
+UI -> UserAuth : Verifies user authentication
+activate UserAuth
+UserAuth --> UI : Returns authentication status
+deactivate UserAuth
 
-AppCore -> API : Sends selected appointment days
-activate API
+UI -> AppointmentManager : Request to initiate appointment selection
+activate AppointmentManager
 
-API -> DB : Updates desired appointment days in database
+AppointmentManager -> UI : Request for appointment details
+UI -> PetOwner : Prompt for appointment details
+PetOwner -> UI : Inputs appointment details
+
+UI -> AppointmentManager : Sends appointment details
+AppointmentManager -> AppointmentAPI : Sends appointment details
+activate AppointmentAPI
+
+AppointmentAPI -> UserVerifyAPI : Verifies user credentials
+activate UserVerifyAPI
+UserVerifyAPI -> DB : Check user credentials
 activate DB
+DB --> UserVerifyAPI : Returns user verification status
+deactivate DB
+UserVerifyAPI --> AppointmentAPI : Returns user verification status
+deactivate UserVerifyAPI
 
-DB --> API : Returns appointment selection status
+AppointmentAPI -> DB : Stores appointment details in database
+DB --> AppointmentAPI : Returns appointment confirmation
 deactivate DB
 
-API --> AppCore : Returns appointment selection status
-deactivate API
+alt Successful Appointment
+    AppointmentAPI --> AppointmentManager : Returns appointment confirmation
+    AppointmentManager --> UI : Updates appointment status
+    UI --> PetOwner : Displays appointment confirmation
+else Appointment Error
+    AppointmentAPI -> LoggerAPI : Logs error details
+    activate LoggerAPI
+    LoggerAPI -> DB : Store error details
+    activate DB
+    DB --> LoggerAPI : Returns storage confirmation
+    deactivate DB
+    LoggerAPI --> AppointmentAPI : Returns error log confirmation
+    deactivate LoggerAPI
+    AppointmentAPI --> ErrorHandler : Sends error details
+    activate ErrorHandler
+    ErrorHandler --> UI : Updates error status
+    UI --> PetOwner : Displays error message
+end
 
-AppCore --> UI : Updates appointment selection status
-deactivate AppCore
-
-UI --> PetOwner : Displays appointment selection status
+deactivate AppointmentAPI
+deactivate ErrorHandler
+deactivate AppointmentManager
 deactivate UI
-
 @enduml
+
 
