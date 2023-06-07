@@ -1,17 +1,36 @@
 @startuml
-title UC-11: Select Appointment Days - Sequence Diagram
+title: UC-11: Select Appointment Days - Sequence Diagram
+actor PetOwner
+entity "User Interface (UI)" as UI
+box "App core" #LightYellow
+  entity "Appointment Manager" as AppCore
+end box
+entity "API Server" as API
+database "Database" as DB
 
-actor "Pet Owner" as owner
-participant "UI" as ui
-participant "Database" as db
+PetOwner -> UI : Selects desired appointment days
+activate UI
 
-owner -> ui: Accesses appointment calendar
-ui -> owner: Displays calendar
+UI -> AppCore : Sends selected appointment days
+activate AppCore
 
-owner -> ui: Selects desired date or date range
-ui -> db: Records selected dates
+AppCore -> API : Sends selected appointment days
+activate API
 
-db -> ui: Confirms dates recorded
-ui -> owner: Displays confirmation of selected dates
+API -> DB : Updates desired appointment days in database
+activate DB
+
+DB --> API : Returns appointment selection status
+deactivate DB
+
+API --> AppCore : Returns appointment selection status
+deactivate API
+
+AppCore --> UI : Updates appointment selection status
+deactivate AppCore
+
+UI --> PetOwner : Displays appointment selection status
+deactivate UI
 
 @enduml
+
