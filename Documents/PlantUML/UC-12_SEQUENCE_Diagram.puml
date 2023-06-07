@@ -1,17 +1,34 @@
 @startuml
-title UC-12: Confirm Appointment - Sequence Diagram
+actor PetOwner
+entity "User Interface (UI)" as UI
+box "App core" #LightYellow
+  entity "Appointment Manager" as AppCore
+end box
+entity "API Server" as API
+database "Database" as DB
 
-actor "Pet Owner" as owner
-participant "UI" as ui
-participant "Database" as db
+PetOwner -> UI : Selects appointment to confirm
+activate UI
 
-owner -> ui: Reviews selected appointment dates
-owner -> ui: Verifies appointment details
-owner -> ui: Confirms appointment
+UI -> AppCore : Sends appointment confirmation request
+activate AppCore
 
-ui -> db: Records appointment confirmation
-db -> ui: Returns confirmation status
+AppCore -> API : Sends appointment confirmation request
+activate API
 
-ui -> owner: Displays confirmation message
+API -> DB : Confirms appointment in database
+activate DB
+
+DB --> API : Returns appointment confirmation status
+deactivate DB
+
+API --> AppCore : Returns appointment confirmation status
+deactivate API
+
+AppCore --> UI : Updates appointment status
+deactivate AppCore
+
+UI --> PetOwner : Displays confirmation status
+deactivate UI
 
 @enduml
