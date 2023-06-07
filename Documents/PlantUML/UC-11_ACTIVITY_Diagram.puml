@@ -2,18 +2,38 @@
 title UC-11: Select Appointment Days - Activity Diagram
 
 start
+
 :User accesses the appointment calendar;
-note right: The user navigates to the appointment calendar on the app.
 
 :User views the calendar;
 
 :User selects desired date or date range;
 
-:User confirms selected dates;
+if (Selected dates available) then (yes)
+  :UI receives appointment days;
 
-:System records selected dates;
+  :AppCore gets the selected appointment days from UI;
 
-:User receives confirmation of selected dates;
+  :AppCore sends selected appointment days to API;
+
+  :API updates the selected appointment days in Database;
+
+  :Database returns appointment selection status to API;
+
+  :API sends appointment selection status to AppCore;
+
+  :AppCore updates the appointment selection status in UI;
+
+  :User confirms selected dates;
+
+  :System records selected dates;
+
+  :User receives confirmation of selected dates;
+else (no)
+  :System displays unavailability message;
+  :User chooses different dates;
+  :Repeat process until available dates are found;
+endif
 
 stop
 
