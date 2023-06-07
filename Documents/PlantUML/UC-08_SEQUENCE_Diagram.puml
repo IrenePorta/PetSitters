@@ -1,22 +1,35 @@
 @startuml
-title UC-08: Make Payment - Sequence Diagram
+title: UC-08: Make Payment - Sequence Diagram
+actor PetOwner
+entity "User Interface (UI)" as UI
+box "App core" #LightYellow
+  entity "Payment Manager" as AppCore
+end box
+entity "API Server" as API
+database "Database" as DB
 
-actor "Pet Owner" as owner
-participant "UI" as ui
-participant "Payment System" as paymentSystem
+PetOwner -> UI : Initiates payment
+activate UI
 
-owner -> ui: Selects service and views payment details
-ui -> owner: Displays service cost and details
+UI -> AppCore : Sends payment details
+activate AppCore
 
-owner -> ui: Confirms payment details
+AppCore -> API : Sends payment details
+activate API
 
-alt Payment method is valid
-    owner -> ui: Selects payment method
-    ui -> paymentSystem: Sends payment request
-    paymentSystem -> ui: Processes payment
-    ui -> owner: Sends payment confirmation
-else Payment method is invalid
-    ui -> owner: Requests valid payment method
-end
+API -> DB : Stores payment details in database
+activate DB
+
+DB --> API : Returns payment confirmation
+deactivate DB
+
+API --> AppCore : Returns payment confirmation
+deactivate API
+
+AppCore --> UI : Updates payment status
+deactivate AppCore
+
+UI --> PetOwner : Displays payment confirmation
+deactivate UI
 
 @enduml
