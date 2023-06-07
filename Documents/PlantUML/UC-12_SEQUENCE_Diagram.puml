@@ -4,97 +4,62 @@ title UC-12: Confirm Appointment - Sequence Diagram
 actor "Pet Owner" as owner
 participant "User Interface (UI)" as ui
 box "App Core" #LightYellow
-  participant "Appointment Controller" as appCtrl
-  participant "Notification Service" as notifService
+  participant "Appointment Manager" as core
 end box
-box "API Server" #LightGreen
-  participant "Appointment Service" as appService
-  participant "Pet Sitter Service" as sitterService
-end box
+participant "API Server" as server
 database "Database" as db
 
 owner -> ui: Access appointment details
 activate ui
-
-ui -> appCtrl: Request appointment details
-activate appCtrl
-
-appCtrl -> appService: API request for appointment details
-activate appService
-
-appService -> db: Retrieve appointment details
+ui -> core: Request appointment details
+activate core
+core -> server: API request for appointment details
+activate server
+server -> db: Retrieve appointment details
 activate db
-
-db --> appService: Return appointment details
+db --> server: Return appointment details
 deactivate db
-
-appService --> appCtrl: Return appointment details
-deactivate appService
-
-appCtrl --> ui: Display appointment details
-deactivate appCtrl
-
+server --> core: Return appointment details
+deactivate server
+core --> ui: Display appointment details
+deactivate core
 owner -> ui: Review appointment details
+activate ui
 
 group Confirm Appointment
     owner -> ui: Confirm appointment
     activate ui
-
-    ui -> appCtrl: Confirm appointment request
-    activate appCtrl
-
-    appCtrl -> appService: API request to confirm appointment
-    activate appService
-
-    appService -> db: Update appointment status to confirmed
+    ui -> core: Confirm appointment request
+    activate core
+    core -> server: API request to confirm appointment
+    activate server
+    server -> db: Update appointment status to confirmed
     activate db
-
-    db --> appService: Appointment confirmation status
+    db --> server: Appointment confirmation status
     deactivate db
-
-    appService --> appCtrl: Return appointment confirmation status
-    deactivate appService
-
-    appCtrl -> notifService: Notify Pet Sitter of confirmed appointment
-    activate notifService
-
-    notifService -> sitterService: API request to send notification to Pet Sitter
-    activate sitterService
-
-    sitterService --> notifService: Return notification status
-    deactivate sitterService
-
-    notifService --> appCtrl: Return notification status
-    deactivate notifService
-
-    appCtrl --> ui: Display appointment confirmation
-    deactivate appCtrl
+    server --> core: Return appointment confirmation status
+    deactivate server
+    core --> ui: Display appointment confirmation
+    deactivate core
 end group
 
 group Handle Confirmation
     owner -> ui: Verify confirmation
     activate ui
-
-    ui -> appCtrl: Verify confirmation request
-    activate appCtrl
-
-    appCtrl -> appService: API request for confirmation status
-    activate appService
-
-    appService -> db: Retrieve confirmation status
+    ui -> core: Verify confirmation request
+    activate core
+    core -> server: API request for confirmation status
+    activate server
+    server -> db: Retrieve confirmation status
     activate db
-
-    db --> appService: Return confirmation status
+    db --> server: Return confirmation status
     deactivate db
-
-    appService --> appCtrl: Return confirmation status
-    deactivate appService
-
-    appCtrl --> ui: Display confirmation status
-    deactivate appCtrl
+    server --> core: Return confirmation status
+    deactivate server
+    core --> ui: Display confirmation status
+    deactivate core
     deactivate ui
 end group
 
 @enduml
-
 
