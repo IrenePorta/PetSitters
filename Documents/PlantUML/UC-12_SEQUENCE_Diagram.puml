@@ -1,4 +1,5 @@
 @startuml
+title: UC-12: Confirm Appointment - Sequence Diagram
 actor PetOwner
 entity "User Interface (UI)" as UI
 box "App core" #LightYellow
