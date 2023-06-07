@@ -2,18 +2,40 @@
 title UC-12: Confirm Appointment - Activity Diagram
 
 start
-:User reviews selected appointment dates;
 
-:User verifies appointment details;
-note right: Such as timing and pet sitter.
+:User accesses the appointment confirmation page;
 
-:User confirms appointment;
+:User views the selected appointment;
 
-:System records confirmation;
-note right: Records the user's confirmation and updates the appointment status.
+:User confirms the appointment;
 
-:User receives confirmation message;
+if (Appointment is still available) then (yes)
+  :UI receives confirmation;
+
+  :AppCore gets the confirmation from UI;
+
+  :AppCore sends confirmation to API;
+
+  :API updates the confirmation in Database;
+
+  :Database returns confirmation status to API;
+
+  :API sends confirmation status to AppCore;
+
+  :AppCore updates the confirmation status in UI;
+
+  :User sees confirmation status;
+
+  :System records the confirmed appointment;
+
+  :User receives final confirmation of the appointment;
+else (no)
+  :System displays message that appointment is no longer available;
+  :User returns to select new appointment;
+  :Repeat process until a confirmable appointment is found;
+endif
 
 stop
 
 @enduml
+
