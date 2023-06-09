@@ -3,40 +3,89 @@ title UC-01: User Registration - Sequence Diagram
 
 actor "User" as user
 participant "User Interface (UI)" as ui
-participant "Registration Controller" as regCtrl
-participant "User Service" as userService
-participant "Database Server" as dbServer
-participant "Email Service" as emailService
+box "App Core" #LightYellow
+  participant "Registration Controller" as regCtrl
+  participant "Validation Service" as valService
+end box
+box "API Server" #LightGreen
+  participant "User Service" as userService
+  participant "Email Service" as emailService
+end box
+database "Database" as db
 
 user -> ui: Access registration page
+activate ui
+
 ui -> regCtrl: Load registration page request
-regCtrl -> userService: API request to load registration page
-userService --> regCtrl: Return response
+activate regCtrl
+
 regCtrl --> ui: Display registration page
+deactivate regCtrl
 
 group Registration Process
     user -> ui: Enter registration details
+    activate ui
+
     ui -> regCtrl: Submit registration details
+    activate regCtrl
+
+    regCtrl -> valService: Validate registration details
+    activate valService
+
+    valService --> regCtrl: Return validation result
+    deactivate valService
+
     regCtrl -> userService: API request to register user
-    userService -> dbServer: Check for existing users with the same email
-    dbServer --> userService: Return existing user check result
-    userService -> userService: Decide whether to create user based on result
-    userService -> dbServer: Create new user record
-    dbServer --> userService: Return success status
+    activate userService
+
+    userService -> db: Check for existing users with the same email
+    activate db
+
+    db --> userService: Return existing user check result
+    deactivate db
+
+    userService -> db: Create new user record
+    activate db
+
+    db --> userService: Return success status
+    deactivate db
+
     userService --> regCtrl: Return success status
+    deactivate userService
+
     regCtrl --> ui: Confirm successful registration
+    deactivate regCtrl
 end group
 
 group Account Verification
     user -> ui: Clicks on verification link in email
+    activate ui
+
     ui -> regCtrl: Verification link clicked
+    activate regCtrl
+
     regCtrl -> userService: API request to verify user
-    userService -> dbServer: Verify user account
-    dbServer --> userService: Return success status
+    activate userService
+
+    userService -> db: Verify user account
+    activate db
+
+    db --> userService: Return success status
+    deactivate db
+
     userService -> emailService: Send verification success email
+    activate emailService
+
     emailService --> userService: Confirmation of email sent
+    deactivate emailService
+
     userService --> regCtrl: Return success status
+    deactivate userService
+
     regCtrl --> ui: Display successful verification message
+    deactivate regCtrl
+
+    deactivate ui
 end group
 
 @enduml
