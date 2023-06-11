@@ -1,0 +1,181 @@
+@startuml
+Title: System Class Diagram
+
+package "App" {
+
+  class Main {
+      - UI
+      - ServerProxy
+      +Main()
+      +initialize()
+      +shutdown()
+      +startApplication()
+      +handleUserInput()
+      +loadData()
+      +saveData()
+  }
+    
+  class UI {
+      + renderHomeScreen()
+      + renderLoginScreen()
+      + renderUserProfile()
+      + renderPetProfile()
+      + updateUserInfo()
+      + updatePetInfo()
+      + showAvailablePetSitters()
+      + showAppointments()
+      + showPaymentPage()
+      + handleErrorMessages()
+  }
+  
+  class ServerProxy {
+      - APIProxy apiProxy
+      - DatabaseProxy databaseProxy
+      + clientToServer()
+      + serverToClient()
+      +initialize()
+      +shutdown()
+      +syncDataWithServer()
+      +handleServerError()
+  }
+
+  class API {
+      +sendRequestToServer()
+      +receiveResponseFromServer()
+      +handleAPIErrors()
+      +fetchUserData()
+      +fetchPetData()
+      +fetchAvailablePetSitters()
+  }
+
+  class Database {
+      +connectToDatabase()
+      +disconnectFromDatabase()
+      +sendQueryToDatabase()
+      +receiveResultsFromDatabase()
+      +updateDatabase()
+      +handleDatabaseErrors()
+  }
+  
+  Main "1" *-- "1" UI: composition
+  Main "1" *-- "1" ServerProxy: composition
+  ServerProxy "1" *-- "1" API: composition
+  ServerProxy "1" *-- "1" Database: composition
+}
+
+
+package "Server" {
+
+  class Main {
+    -String serverName
+    -User[] users
+    -Appointment[] appointments
+    -Payment_Gateway[] paymentGateways
+    -Database database
+    +initializeServer()
+    +loadUsers()
+    +manageAppointments()
+  }
+
+  class "Payment_Gateway" {
+    -String transactionId
+    -float amount
+    -String paymentStatus
+    +ProcessPayment(User_Account)
+    +RefundPayment(User_Account)
+    +CheckTransactionStatus()
+  }
+
+  class User {
+    -UserType type
+    -String name
+    -String contact
+    -Appointment[] appointments
+    +register()
+    +manageProfile()
+  }
+
+  class PetOwner {
+    -Pet[] pets
+    -Appointment[] requestedAppointments
+    +searchPetSitter()
+    +viewPetSitterProfile()
+    +requestAppointment()
+    +manageAppointments()
+    +makePayment()
+    +rateAndReview()
+    +selectAppointmentDays()
+    +confirmAppointment()
+    +updateAppointment()
+    +cancelAppointment()
+  }
+
+  class PetSitter {
+    -int yearsExperience
+    -Appointment[] receivedAppointments
+    -String name
+    -String location
+    -float rating
+    -Appointment[] appointments
+    +AcceptAppointment(Appointment)
+    +RejectAppointment(Appointment)
+    +ReceivePayment(Appointment)
+    +RespondToReview(Pet_Owner, response)
+  }
+
+  class Pet {
+    -String name
+    -String breed
+    -Date birthdate
+    -String specialNeeds
+    +setPetDetails()
+    +getOwner()
+    +setOwner(PetOwner)
+  }
+
+  class Appointment {
+    -Date date
+    -Time startTime
+    -Time endTime
+    -PetSitter sitter
+    -PetOwner owner
+    -boolean confirmed
+    -Payment payment
+    +ConfirmAppointment()
+    +ScheduleAppointment(date, time)
+    +CancelAppointment()
+  }
+
+  class Review {
+    -float rating
+    -String comment
+    +writeReview()
+  }
+
+  class "Database" {
+    -String databaseName
+    -String databaseUrl
+    +ConnectToDatabase()
+    +RetrieveData()
+    +StoreData()
+    +UpdateData()
+    +DeleteData()
+  }
+
+  Main "1" -- "0..*" User : manages
+  Main "1" -- "0..*" Payment_Gateway : processes
+  Main "1" -- "1" Database : owns
+
+  User <|-- PetOwner
+  User <|-- PetSitter
+  PetOwner "1" -- "*" Pet : owns
+  PetOwner -- Appointment
+  PetSitter -- Appointment
+  PetOwner -- Review
+
+}
+
+App "1" -- "1" Server : communicates with
+
+
+@enduml
