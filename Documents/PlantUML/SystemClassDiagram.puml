@@ -1,5 +1,5 @@
 @startuml
-Title: System Class Diagram
+Title: PetS Class Diagram
 
 package "App" {
 
@@ -16,6 +16,11 @@ package "App" {
   }
     
   class UI {
+      -String currentPage
+      -User currentUser
+      -Pet currentPet
+      -HashMap<String, UserInput> userInputFields
+      -HashMap<String, Component> components
       + renderHomeScreen()
       + renderLoginScreen()
       + renderUserProfile()
@@ -40,6 +45,9 @@ package "App" {
   }
 
   class API {
+      -String baseURL
+      -String apiKey
+      -HashMap<String, String> headers
       +sendRequestToServer()
       +receiveResponseFromServer()
       +handleAPIErrors()
@@ -49,18 +57,20 @@ package "App" {
   }
 
   class Database {
-      +connectToDatabase()
-      +disconnectFromDatabase()
+      -String userTable
+      -String petTable
+      -String password
+      -String appointmentTable:
       +sendQueryToDatabase()
       +receiveResultsFromDatabase()
       +updateDatabase()
       +handleDatabaseErrors()
   }
   
-  Main "1" *-- "1" UI: composition
-  Main "1" *-- "1" ServerProxy: composition
-  ServerProxy "1" *-- "1" API: composition
-  ServerProxy "1" *-- "1" Database: composition
+  Main "1" *-- "1" UI
+  Main "1" *-- "1" ServerProxy
+  ServerProxy "1" *-- "1" API
+  ServerProxy "1" *-- "1" Database
 }
 
 
@@ -169,13 +179,11 @@ package "Server" {
   User <|-- PetOwner
   User <|-- PetSitter
   PetOwner "1" -- "*" Pet : owns
-  PetOwner -- Appointment
-  PetSitter -- Appointment
-  PetOwner -- Review
+  Appointment "1" -- "1" Pet : Care-of
+  PetSitter "1" -- "*" Appointment : employment
+  PetOwner "1" -- "*" Review : Makes
 
 }
-
-App "1" -- "1" Server : communicates with
 
 
 @enduml
